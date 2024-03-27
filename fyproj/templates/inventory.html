@@ -1,0 +1,191 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <head>
+        <title>Supply Chain Management</title>
+        <link rel="stylesheet" href="{% static 'css/inventory.css' %}">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+        <!-- Boxicons CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
+        <meta charset="UTF-8"> 
+   
+  
+    <!-- INCLUDING JQUERY-->
+    <script src= "https://code.jquery.com/jquery-3.5.1.js"> 
+    </script> 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+        
+    </head>
+
+
+    
+    <body id="body-pd">
+       
+        <script src="{% static 'js/inventory.js' %}" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    
+        <!-- Bootstrap Bundle (Bootstrap JS + Popper.js) -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+        
+   
+        <header class="header" id="header">
+           
+            <div class="header_toggle">
+            <div style="display:flex; align-items:baseline; gap:10px" class="header_toggle"> 
+            <i class='bx bx-menu' id="header-toggle"></i> 
+            <h2 style="color:#6E48C0; font-weight: 600; margin-left: 0px;">Inventory</h2><br></div>
+            
+            </div>
+           
+            <div class="header_img"> <img src="https://i.imgur.com/hczKIze.jpg" alt=""> </div>
+        </header>
+
+             <!-- sidebar start -->
+        <div class="l-navbar" id="nav-bar">
+            <nav class="nav">
+                <div> <a href="#" class="nav_logo"> <i class='bx bx-layer nav_logo-icon'></i> <span class="nav_logo-name">Supply Chain</span> </a>
+                    <div class="nav_list"> 
+                        <a href="{% url 'dashboard' %}" class="nav_link active"> <i class='bx bx-grid-alt nav_icon'></i> <span class="nav_name">Dashboard</span> </a> 
+                        <a href="{% url 'sales' %}" class="nav_link"> <i class='bx bx-user nav_icon'></i> <span class="nav_name">Sales</span> </a> 
+                        <a href="{% url 'inventory' %}" class="nav_link"> <i class='bx bx-message-square-detail nav_icon'></i> <span class="nav_name">Inventory</span> </a> 
+                        <a href="#" class="nav_link"> <i class='bx bx-bookmark nav_icon'></i> <span class="nav_name">Setting</span> </a>  
+                    </div>
+                </div> <a href="#" class="nav_link"> <i class='bx bx-log-out nav_icon'></i> <span class="nav_name">SignOut</span> </a>
+            </nav>
+        </div>
+        <!-- sidebar end -->
+
+
+        <!--Container Main start-->
+        <div class="text-alert">
+
+        <div  style="margin-top:150px"  >
+            <div>
+                Sort by: <button class="button-8" role="button">Store</button> <button class="button-8" role="button">Sales</button> <button class="button-8" role="button">Status</button>
+            </div>
+            
+            <div>
+                 <!-- Table Div ---------------------------------------------------- -->
+                <table id="jsonTable">
+                    <thead>
+                        <tr id="headerRow">
+                            <!-- Header rows will be populated dynamically -->
+                        </tr>
+                    </thead>
+                    <tbody id="dataRows">
+                        <!-- Data rows will be populated dynamically -->
+                    </tbody>
+                </table>
+                
+                <script>
+                    // Sample JSON data
+                    var jsonData = [
+                        {"Inventory Id": 1, "Store": "John Doe", "Brand": 30, "Description": 30, "On Hand": 30, "Status": 30},
+                        {"Inventory Id": 2, "Store": "Jane Smith", "Brand": 25,"Description": 30, "On Hand": 30, "Status": 30},
+                        {"Inventory Id": 3, "Store": "Bob Johnson", "Brand": 35,"Description": 30, "On Hand": 30, "Status": 30},
+                        {"Inventory Id": 4, "Store": "Bob Johnson", "Brand": 35,"Description": 30, "On Hand": 30, "Status": 30},
+                        {"Inventory Id": 1, "Store": "John Doe", "Brand": 30, "Description": 30, "On Hand": 30, "Status": 30},
+                        {"Inventory Id": 2, "Store": "Jane Smith", "Brand": 25,"Description": 30, "On Hand": 30, "Status": 30},
+                        {"Inventory Id": 3, "Store": "Bob Johnson", "Brand": 35,"Description": 30, "On Hand": 30, "Status": 30},
+                        {"Inventory Id": 4, "Store": "Bob Johnson", "Brand": 35,"Description": 30, "On Hand": 30, "Status": 30},
+                        {"Inventory Id": 1, "Store": "John Doe", "Brand": 30, "Description": 30, "On Hand": 30, "Status": 30},
+                        {"Inventory Id": 2, "Store": "Jane Smith", "Brand": 25,"Description": 30, "On Hand": 30, "Status": 30},
+                        {"Inventory Id": 3, "Store": "Bob Johnson", "Brand": 35,"Description": 30, "On Hand": 30, "Status": 30},
+                        {"Inventory Id": 4, "Store": "Bob Johnson", "Brand": 35,"Description": 30, "On Hand": 30, "Status": 30}
+                    ];
+                
+                    // Function to create table headers dynamically
+                    function createTableHeader() {
+                        var headers = Object.keys(jsonData[0]);
+                        var headerRow = document.getElementById("headerRow");
+                        headers.forEach(function(header) {
+                            var th = document.createElement("th");
+                            th.textContent = header.charAt(0).toUpperCase() + header.slice(1);
+                            headerRow.appendChild(th);
+                        });
+                    }
+                
+                    // Function to populate table with JSON data
+                    function populateTable() {
+                        var dataRows = document.getElementById("dataRows");
+                        jsonData.forEach(function(item) {
+                            var tr = document.createElement("tr");
+                            Object.values(item).forEach(function(value) {
+                                var td = document.createElement("td");
+                                td.textContent = value;
+                                tr.appendChild(td);
+                            });
+                            dataRows.appendChild(tr);
+                        });
+                    }
+                
+                    // Call functions to create table header and populate table
+                    createTableHeader();
+                    populateTable();
+                </script>
+            </div>
+          
+        </div>
+        <div class="alert">
+            <h4 style="text-align: center;">Inventory Analysis</h4>
+                <div id="boxBack"><div id="boxWrap">
+                    <div id="boxTxt"></div>  
+            <button class="button-9" id="openFormBtn" style="margin-top: 40px;text-align: center;" >Product Details</button><br>
+            </div></div>
+            <button class="button-9" id="openFormBtn">Order fulfillment</button><br>
+            <button class="button-9" id="openFormBtn">Dynamic Pricing Strategy</button><br>
+            <button class="button-9" id="openFormBtn">Risk Manager</button><br>
+            <button class="button-9" id="openFormBtn">Product Patterns</button><br>
+            <button class="button-9" id="openFormBtn">Market trends</button><br>
+        </div>
+      </div>
+        <!--Container Main end-->
+<div>
+    <button id="openFormBtn">Open Form</button>
+    <div id="popupForm" class="popup">
+        <h2>Enter product details</h2>
+        <form>
+            <label for="name">Name:</label><br>
+            <input type="text" id="name" name="name"><br>
+            <label for="id">Id:</label><br>
+            <input type="number" id="id" name="id"><br><br>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+    
+    <!-- Overlay -->
+    <div id="overlay" class="overlay"></div>
+    
+    <script>
+        // Get the button and the form elements
+        var openFormBtn = document.getElementById("openFormBtn");
+        var popupForm = document.getElementById("popupForm");
+        var overlay = document.getElementById("overlay");
+    
+        // Function to open the form pop-up
+        function openFormPopup() {
+            popupForm.style.display = "block";
+            overlay.style.display = "block";
+        }
+    
+        // Function to close the form pop-up
+        function closeFormPopup() {
+            popupForm.style.display = "none";
+            overlay.style.display = "none";
+        }
+    
+        // Event listener for the button click
+        openFormBtn.addEventListener("click", openFormPopup);
+    
+        // Event listener for closing the form pop-up when clicking outside the form
+        overlay.addEventListener("click", closeFormPopup);
+    </script>
+</div>
+       
+    </body>
+</html>
